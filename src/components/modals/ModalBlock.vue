@@ -1,11 +1,13 @@
 <template>
-    <transition name="fm-modal">
-        <div class="fm-modal modal" ref="fmModal" v-on:click="hideModal">
-            <div class="modal-dialog" role="document" v-bind:class="modalSize" v-on:click.stop>
-                <component v-bind:is="modalName" />
+    <Teleport to="body">
+        <transition name="fm-modal">
+            <div class="fm-modal modal" ref="fmModal" v-on:click="hideModal">
+                <div class="modal-dialog" role="document" v-bind:class="modalSize" v-on:click.stop>
+                    <component v-bind:is="modalName" />
+                </div>
             </div>
-        </div>
-    </transition>
+        </transition>
+    </Teleport>
 </template>
 
 <script>

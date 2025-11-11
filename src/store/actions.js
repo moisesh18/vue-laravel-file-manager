@@ -28,6 +28,16 @@ export default {
                 if (window.location.search) {
                     const params = new URLSearchParams(window.location.search);
 
+                    // Support simple 'disk' and 'path' parameters (applies to left manager)
+                    if (params.get('disk')) {
+                        leftDisk = params.get('disk');
+                    }
+
+                    if (params.get('path')) {
+                        leftPath = params.get('path');
+                    }
+
+                    // Support explicit left/right parameters
                     if (params.get('leftDisk')) {
                         leftDisk = params.get('leftDisk');
                     }

@@ -1,7 +1,7 @@
 <template>
     <div class="fm-navbar mb-3">
         <div class="row justify-content-between">
-            <div class="col-auto">
+            <div class="col-auto d-flex flex-column flex-md-row">
                 <div class="btn-group" role="group">
                     <button
                         type="button"
@@ -10,7 +10,7 @@
                         v-bind:title="lang.btn.back"
                         v-on:click="historyBack()"
                     >
-                        <i class="bi bi-skip-backward-fill" />
+                        <i class="bi bi-arrow-left" />
                     </button>
                     <button
                         type="button"
@@ -19,7 +19,7 @@
                         v-bind:title="lang.btn.forward"
                         v-on:click="historyForward()"
                     >
-                        <i class="bi bi-skip-forward-fill" />
+                        <i class="bi bi-arrow-right" />
                     </button>
                     <button
                         type="button"
@@ -31,14 +31,6 @@
                     </button>
                 </div>
                 <div class="btn-group" role="group">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        v-on:click="showModal('NewFileModal')"
-                        v-bind:title="lang.btn.file"
-                    >
-                        <i class="bi bi-file-earmark"></i>
-                    </button>
                     <button
                         type="button"
                         class="btn btn-secondary"
@@ -104,18 +96,8 @@
                         <i class="bi bi-clipboard"></i>
                     </button>
                 </div>
-                <div class="btn-group" role="group">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        v-bind:title="lang.btn.hidden"
-                        v-on:click="toggleHidden"
-                    >
-                        <i class="bi" v-bind:class="[hiddenFiles ? 'bi-eye-fill' : 'bi-eye-slash-fill']" />
-                    </button>
-                </div>
             </div>
-            <div class="col-auto text-right">
+            <div class="col-auto d-flex flex-column flex-md-row text-right">
                 <div class="btn-group" role="group">
                     <button
                         type="button"
@@ -134,27 +116,6 @@
                         v-bind:title="lang.btn.grid"
                     >
                         <i class="bi bi-grid"></i>
-                    </button>
-                </div>
-                <div class="btn-group" role="group">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        v-bind:title="lang.btn.fullScreen"
-                        v-bind:class="{ active: fullScreen }"
-                        v-on:click="screenToggle"
-                    >
-                        <i class="bi bi-arrows-fullscreen"></i>
-                    </button>
-                </div>
-                <div class="btn-group" role="group">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        v-bind:title="lang.btn.about"
-                        v-on:click="showModal('AboutModal')"
-                    >
-                        <i class="bi bi-question-lg"></i>
                     </button>
                 </div>
             </div>

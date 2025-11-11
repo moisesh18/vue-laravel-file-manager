@@ -1,3 +1,5 @@
+import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
 // Event bus
 import EventBus from '../../../emitter';
 
@@ -170,11 +172,8 @@ export default {
 
             // show, play..
             if (this.$store.state.fm.settings.imageExtensions.includes(extension.toLowerCase())) {
-                // show image
-                this.$store.commit('fm/modal/setModalState', {
-                    modalName: 'PreviewModal',
-                    show: true,
-                });
+                // Open viewerjs modal instead of PreviewModal
+                this.openViewerjsModal(path);
             } else if (Object.keys(this.$store.state.fm.settings.textExtensions).includes(extension.toLowerCase())) {
                 // show text file
                 this.$store.commit('fm/modal/setModalState', {
@@ -200,6 +199,128 @@ export default {
                     path,
                 });
             }
+        },
+
+        /**
+         * Open viewerjs modal for images
+         * @param {string} selectedPath - Path of the selected image
+         */
+        async openViewerjsModal(selectedPath) {
+            // Get all image files from current directory
+            const imageFiles = this.files.filter((file) =>
+                this.$store.state.fm.settings.imageExtensions.includes(file.extension.toLowerCase())
+            );
+
+            if (imageFiles.length === 0) {
+                return;
+            }
+
+            // Create a temporary container for images
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.top = '-9999px';
+            container.style.left = '-9999px';
+            container.style.visibility = 'hidden';
+            document.body.appendChild(container);
+
+            // Create image elements for viewerjs
+            const images = [];
+            let selectedIndex = 0;
+            const auth = this.$store.getters['fm/settings/authHeader'];
+
+            // Build URLs for all images
+            const urlPromises = imageFiles.map((file) => {
+                if (auth) {
+                    return this.$store
+                        .dispatch('fm/url', {
+                            disk: this.selectedDisk,
+                            path: file.path,
+                        })
+                        .then((response) => {
+                            if (response.data.result.status === 'success') {
+                                return response.data.url;
+                            }
+                            return null;
+                        });
+                }
+                return Promise.resolve(
+                    `${this.$store.getters['fm/settings/baseUrl']}preview?disk=${this.selectedDisk
+                    }&path=${encodeURIComponent(file.path)}&v=${file.timestamp}`
+                );
+            });
+
+            const urls = await Promise.all(urlPromises);
+
+            // Create image elements with URLs
+            for (let i = 0; i < imageFiles.length; i += 1) {
+                const file = imageFiles[i];
+                const img = document.createElement('img');
+
+                if (urls[i]) {
+                    img.src = urls[i];
+                }
+
+                img.alt = file.basename;
+                img.setAttribute('data-viewer', '');
+                container.appendChild(img);
+                images.push(img);
+
+                if (file.path === selectedPath) {
+                    selectedIndex = i;
+                }
+            }
+
+            // Wait for images to load
+            await Promise.all(
+                images.map(
+                    (imgElement) =>
+                        new Promise((resolve) => {
+                            if (imgElement.complete) {
+                                resolve();
+                            } else {
+                                const loadHandler = () => {
+                                    resolve();
+                                };
+                                imgElement.addEventListener('load', loadHandler);
+                                imgElement.addEventListener('error', loadHandler);
+                            }
+                        })
+                )
+            );
+
+            // Initialize viewerjs
+            const viewer = new Viewer(container, {
+                inline: false,
+                backdrop: true,
+                toolbar: {
+                    zoomIn: true,
+                    zoomOut: true,
+                    reset: true,
+                    rotateLeft: true,
+                    rotateRight: true,
+                    flipHorizontal: true,
+                    flipVertical: true,
+                },
+                viewed: (event) => {
+                    // Clean up when viewer is closed
+                    if (event.detail.index === undefined || event.detail.index === -1) {
+                        viewer.destroy();
+                        if (container.parentNode) {
+                            document.body.removeChild(container);
+                        }
+                    }
+                },
+                hidden: () => {
+                    // Clean up when viewer is hidden
+                    viewer.destroy();
+                    if (container.parentNode) {
+                        document.body.removeChild(container);
+                    }
+                },
+            });
+
+            // Show the selected image
+            viewer.view(selectedIndex);
         },
     },
 };
