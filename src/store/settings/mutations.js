@@ -34,7 +34,10 @@ export default {
     initAxiosSettings(state) {
         // initiate base url, if not set manually
         if (!state.baseUrl) {
-            if (import.meta.env.VITE_APP_LFM_AXIOS_BASE_URL) {
+            // In development mode (Vite dev server), always use relative path to leverage proxy
+            if (import.meta.env.DEV && window.location.hostname === 'localhost') {
+                state.baseUrl = '/file-manager/';
+            } else if (import.meta.env.VITE_APP_LFM_AXIOS_BASE_URL) {
                 // vue .env
                 state.baseUrl = import.meta.env.VITE_APP_LFM_AXIOS_BASE_URL;
             } else if (import.meta.env.VITE_LFM_BASE_URL) {

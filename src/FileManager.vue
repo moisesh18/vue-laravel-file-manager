@@ -133,6 +133,15 @@ export default {
                     // loading spinner +
                     this.$store.commit('fm/messages/addLoading');
 
+                    // In development mode, add X-Original-Referer header for ACL compatibility
+                    if (import.meta.env.DEV && window.location.hostname === 'localhost') {
+                        const baseUrl =
+                            import.meta.env.VITE_APP_LFM_AXIOS_BASE_URL || import.meta.env.VITE_LFM_BASE_URL || '';
+                        const proxyTarget = baseUrl ? new URL(baseUrl).origin : 'http://localhost';
+                        const originalReferer = window.location.href.replace(window.location.origin, proxyTarget);
+                        config.headers['X-Original-Referer'] = originalReferer;
+                    }
+
                     return config;
                 },
                 (error) => {
