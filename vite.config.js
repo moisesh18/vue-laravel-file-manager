@@ -1,5 +1,9 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -43,10 +47,19 @@ export default defineConfig(({ mode }) => {
         build: {
             minify: true,
             cssCodeSplit: false,
+            copyPublicDir: false,
             rollupOptions: {
+                input: path.resolve(__dirname, 'src/main.js'),
                 output: {
-                    manualChunks: {
-                        vendor: [],
+                    entryFileNames: 'file-manager.js',
+                    chunkFileNames: 'file-manager-[name].js',
+                    inlineDynamicImports: true,
+                    assetFileNames: (assetInfo) => {
+                        const name = assetInfo.name || '';
+                        if (name.endsWith('.css')) {
+                            return 'file-manager.css';
+                        }
+                        return 'assets/[name]-[hash][extname]';
                     },
                 },
             },

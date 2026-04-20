@@ -40,12 +40,16 @@ export default {
         },
 
         /**
-         * View file
+         * View file (solo vista previa; recorte en CropperModal)
          */
         viewAction() {
-            // show image
+            const ext = (this.selectedItems[0].extension || '').toLowerCase();
+            const modalName = this.$store.state.fm.settings.cropExtensions.includes(ext)
+                ? 'CropperModal'
+                : 'PreviewModal';
+
             this.$store.commit('fm/modal/setModalState', {
-                modalName: 'PreviewModal',
+                modalName,
                 show: true,
             });
         },

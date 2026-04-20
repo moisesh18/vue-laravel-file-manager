@@ -1,39 +1,38 @@
 <template>
-    <div class="modal-content fm-modal-preview">
+    <div class="modal-content fm-modal-cropper">
         <div class="modal-header">
             <h5 class="modal-title w-75 text-truncate">
-                {{ lang.modal.preview.title }}
+                {{ lang.modal.cropper.title }}
                 <small class="text-muted pl-3">{{ selectedItem.basename }}</small>
             </h5>
             <button type="button" class="btn-close" aria-label="Close" v-on:click="hideModal"></button>
         </div>
-        <div class="modal-body text-center">
-            <transition name="fade" mode="out-in">
-                <div class="spinner-border spinner-border-lg text-muted my-2" v-if="!imgSrc">
+        <div class="modal-body p-0">
+            <div v-if="!imgSrc" class="text-center py-5">
+                <div class="spinner-border spinner-border-lg text-muted">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <img
-                    v-else
-                    v-bind:src="imgSrc"
-                    v-bind:alt="selectedItem.basename"
-                    v-bind:style="{ 'max-height': maxHeight + 'px' }"
-                />
-            </transition>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-light" v-on:click="hideModal">{{ lang.btn.cancel }}</button>
+            </div>
+            <cropper-module
+                v-else
+                v-bind:imgSrc="imgSrc"
+                v-bind:maxHeight="maxHeight"
+                v-on:closeCropper="onCropperClose"
+            />
         </div>
     </div>
 </template>
 
 <script>
+import CropperModule from '../additions/CropperModule.vue';
 import modal from '../mixins/modal';
 import translate from '../../../mixins/translate';
 import GET from '../../../http/get';
 
 export default {
-    name: 'PreviewModal',
+    name: 'CropperModal',
     mixins: [modal, translate],
+    components: { CropperModule },
     data() {
         return {
             imgSrc: null,
@@ -78,18 +77,18 @@ export default {
                 }&path=${encodeURIComponent(this.selectedItem.path)}&v=${this.selectedItem.timestamp}`;
             }
         },
+
+        onCropperClose() {
+            this.hideModal();
+        },
     },
 };
 </script>
 
 <style lang="scss">
-.fm-modal-preview {
+.fm-modal-cropper {
     .modal-body {
         padding: 0;
-
-        img {
-            max-width: 100%;
-        }
     }
 }
 </style>

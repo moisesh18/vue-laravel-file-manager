@@ -149,9 +149,9 @@ const es = {
             warning: 'Attention! If the names match, the files will be overwritten!',
         },
         cropper: {
-            title: 'Cropping',
+            title: 'Recortar',
             apply: 'Aceptar',
-            reset: 'Reset',
+            reset: 'Reiniciar',
             save: 'Guardar',
         },
     },

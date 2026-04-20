@@ -147,6 +147,9 @@ export default {
             // Image extensions for view and preview
             imageExtensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'],
 
+            // Image extensions for cropping
+            cropExtensions: ['png', 'jpg', 'jpeg', 'webp'],
+
             // audio extensions for play
             audioExtensions: ['ogg', 'mp3', 'aac', 'wav'],
 

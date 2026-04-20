@@ -20,6 +20,7 @@ import StatusModal from './views/StatusModal.vue';
 import RenameModal from './views/RenameModal.vue';
 import PropertiesModal from './views/PropertiesModal.vue';
 import PreviewModal from './views/PreviewModal.vue';
+import CropperModal from './views/CropperModal.vue';
 import TextEditModal from './views/TextEditModal.vue';
 import AudioPlayerModal from './views/AudioPlayerModal.vue';
 import VideoPlayerModal from './views/VideoPlayerModal.vue';
@@ -39,6 +40,7 @@ export default {
         RenameModal,
         PropertiesModal,
         PreviewModal,
+        CropperModal,
         TextEditModal,
         AudioPlayerModal,
         VideoPlayerModal,
@@ -65,7 +67,10 @@ export default {
          */
         modalSize() {
             return {
-                'modal-xl': this.modalName === 'PreviewModal' || this.modalName === 'TextEditModal',
+                'modal-xl':
+                    this.modalName === 'PreviewModal' ||
+                    this.modalName === 'CropperModal' ||
+                    this.modalName === 'TextEditModal',
                 'modal-lg': this.modalName === 'VideoPlayerModal',
                 'modal-sm': false,
             };

@@ -95,6 +95,15 @@
                     >
                         <i class="bi bi-clipboard"></i>
                     </button>
+                    <button
+                        v-if="singleSelectedCroppableImage"
+                        type="button"
+                        class="btn btn-secondary"
+                        v-bind:title="lang.modal.cropper.title"
+                        v-on:click="showModal('CropperModal')"
+                    >
+                        <i class="bi bi-crop"></i>
+                    </button>
                 </div>
             </div>
             <div class="col-auto d-flex flex-column flex-md-row text-right">
@@ -207,6 +216,22 @@ export default {
          */
         hiddenFiles() {
             return this.$store.state.fm.settings.hiddenFiles;
+        },
+
+        /**
+         * Un solo archivo con extensión recortable (abre CropperModal).
+         * @returns {boolean}
+         */
+        singleSelectedCroppableImage() {
+            const items = this.$store.getters['fm/selectedItems'];
+            if (items.length !== 1) {
+                return false;
+            }
+            const ext = items[0].extension;
+            if (!ext) {
+                return false;
+            }
+            return this.$store.state.fm.settings.cropExtensions.includes(ext.toLowerCase());
         },
     },
     methods: {
